@@ -93,6 +93,20 @@ public class UserCreateTests {
 
     }
 
+    @Test
+    @DisplayName("Регистрация пользователя без имени")
+    @Description("Проверка статуса 403 и поля 'message': Email, password and name are required fields")
+    public void shouldFailToRegisterUserWithoutName() {
+        user = new User(randomUser().getEmail(), randomUser().getPassword(), null); // Устанавливаем null для имени
+        response = userSteps.create(user);
+        response.log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_FORBIDDEN)
+                .body("success", is(false))
+                .body("message", is("Email, password and name are required fields"));
+    }
+
+
     @After
     @Description("Удаление созданного пользователя")
     public void tearDown() {

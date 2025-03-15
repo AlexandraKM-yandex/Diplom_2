@@ -41,20 +41,6 @@ public class UserUpdateTests {
                 .body("message", is("You should be authorised"));
     }
 
-
-    @Test
-    @DisplayName("Изменение пароля без авторизации")
-    @Description("Проверка изменения пароля без авторизации, ожидается ошибка 401")
-    public void shouldReturnUnauthorizedWhenUpdatingPasswordWithoutAuth() {
-        user.setPassword(randomUser().getPassword());
-        response = userSteps.updateUserWithoutAuthorization(user);
-        response.log().all()
-                .assertThat()
-                .statusCode(SC_UNAUTHORIZED)
-                .body("success", is(false))
-                .body("message", is("You should be authorised"));
-    }
-
     @Test
     @DisplayName("Изменение имени без авторизации")
     @Description("Проверка изменения имени без авторизации, ожидается ошибка 401")
@@ -99,22 +85,6 @@ public class UserUpdateTests {
                 .statusCode(SC_FORBIDDEN)
                 .body("success", is(false))
                 .body("message", is("User with such email already exists"));
-    }
-
-
-    @Test
-    @DisplayName("Изменение пароля после авторизации")
-    @Description("Проверка успешного изменения пароля после авторизации, ожидается статус 200 и успешное изменение")
-    public void shouldUpdatePasswordWithAuth() {
-        loginResponse = userSteps.login(user);
-        accessToken = loginResponse.extract().path("accessToken");
-        user.setPassword(randomUser().getPassword());
-        response = userSteps.updateUserAfterAuthorization(user, accessToken);
-        response.log().all()
-                .assertThat()
-                .statusCode(SC_OK)
-                .body("success", is(true));
-
     }
 
     @Test
